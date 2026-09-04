@@ -1,5 +1,5 @@
 /**
- * 猫子五子棋 - 主服务器入口
+ * 帽子五子棋 - 主服务器入口
  * Express + Socket.IO
  */
 
@@ -370,7 +370,7 @@ function handleGameEnd(room, io) {
 server.listen(config.port, () => {
   console.log(`
   ===================================
-    猫子五子棋服务器已启动
+    帽子五子棋服务器已启动
     端口: ${config.port}
     环境: ${process.env.NODE_ENV || 'development'}
   ===================================

@@ -1,7 +1,7 @@
 {
   "name": "maozi-gobang-server",
   "version": "1.0.0",
-  "description": "猫子五子棋 - 后端服务",
+  "description": "帽子五子棋 - 后端服务",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

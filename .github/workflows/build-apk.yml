@@ -49,6 +49,21 @@ jobs:
           flutter pub add webview_flutter
           flutter pub add shared_preferences
 
+      # 设置应用名称和图标
+      - name: Apply app name and launcher icons
+        run: |
+          # 应用名称改为「帽子五子棋」
+          MANIFEST=mobile/android/app/src/main/AndroidManifest.xml
+          sed -i 's/android:label="[^"]*"/android:label="帽子五子棋"/' $MANIFEST
+          grep -o 'android:label="[^"]*"' $MANIFEST
+
+          # 用自定义 logo 替换各密度启动图标
+          RES=mobile/android/app/src/main/res
+          for dpi in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            cp assets/app-icons/ic_launcher_${dpi}.png $RES/mipmap-${dpi}/ic_launcher.png
+          done
+          echo "图标已替换"
+
       # 复制 Web 资源到 Flutter 项目
       - name: Copy web assets
         run: |
@@ -75,7 +90,7 @@ jobs:
             @override
             Widget build(BuildContext context) {
               return MaterialApp(
-                title: '猫子五子棋',
+                title: '帽子五子棋',
                 debugShowCheckedModeBanner: false,
                 theme: ThemeData(
                   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4A90D9)),

@@ -689,3 +689,10 @@ body {
     gap: 8px;
   }
 }
+
+/* ==================== Logo 图片 ==================== */
+img.logo-icon {
+  background: none;
+  border-radius: 10px;
+  object-fit: cover;
+}

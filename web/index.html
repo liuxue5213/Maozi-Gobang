@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>猫子五子棋</title>
+  <title>帽子五子棋</title>
+  <link rel="icon" type="image/png" href="src/assets/favicon.png">
   <link rel="stylesheet" href="src/css/style.css">
 </head>
 <body>
@@ -11,8 +12,8 @@
     <!-- 顶部导航 -->
     <header class="header">
       <div class="logo">
-        <span class="logo-icon">猫</span>
-        <span class="logo-text">猫子五子棋</span>
+        <img class="logo-icon" src="src/assets/favicon.png" alt="帽子五子棋">
+        <span class="logo-text">帽子五子棋</span>
       </div>
       <nav class="nav">
         <button class="nav-btn active" data-page="home">首页</button>
@@ -49,7 +50,7 @@
             <canvas id="gameBoard" width="600" height="600"></canvas>
             <div class="board-overlay" id="boardOverlay">
               <div class="overlay-content">
-                <h2>猫子五子棋</h2>
+                <h2>帽子五子棋</h2>
                 <div class="mode-buttons">
                   <button class="btn btn-large btn-ai" id="btnAiGame">
                     <span class="btn-icon">🤖</span>
@@ -145,7 +146,7 @@
           </div>
           <div id="profileLoggedIn" style="display:none">
             <div class="profile-header">
-              <div class="profile-avatar">猫</div>
+              <div class="profile-avatar"><img src="src/assets/favicon.png" alt="帽子五子棋" style="width:100%;height:100%;border-radius:50%;"></div>
               <div class="profile-info">
                 <h2 id="profileNickname">-</h2>
                 <p class="profile-rating">积分: <span id="profileRating">-</span></p>

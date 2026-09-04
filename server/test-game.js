@@ -1,5 +1,5 @@
 /**
- * 猫子五子棋 - 完整功能测试
+ * 帽子五子棋 - 完整功能测试
  */
 
 const { io } = require('socket.io-client');
@@ -20,7 +20,7 @@ function waitForEvent(socket, eventName, timeout = 5000) {
 
 async function runTests() {
   console.log('========================================');
-  console.log('  猫子五子棋 - 功能测试');
+  console.log('  帽子五子棋 - 功能测试');
   console.log(`  服务器: ${SERVER_URL}`);
   console.log('========================================\n');
 
