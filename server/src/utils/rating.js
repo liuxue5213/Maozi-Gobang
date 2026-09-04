@@ -90,8 +90,9 @@ function saveGameRecord(gameData) {
   } = gameData;
 
   // 确保没有 undefined 值 (SQLite 不支持)
+  // OR REPLACE: 防止极端情况下同一对局重复结算导致主键冲突
   db.prepare(
-    `INSERT INTO games (id, player_black, player_white, winner, is_ai_game, ai_difficulty,
+    `INSERT OR REPLACE INTO games (id, player_black, player_white, winner, is_ai_game, ai_difficulty,
                         moves, total_moves, duration, rating_change_black, rating_change_white)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(

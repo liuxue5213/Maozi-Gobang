@@ -33,7 +33,6 @@ const THINKING_TIME_LIMIT = 3000;
 class GomokuAI {
   constructor(difficulty = 3) {
     this.setDifficulty(difficulty);
-    this.transpositionTable = new Map();
     this.nodesSearched = 0;
   }
 
@@ -50,7 +49,6 @@ class GomokuAI {
   getBestMove(board) {
     const startTime = Date.now();
     this.searchStartTime = startTime;
-    this.transpositionTable.clear();
     this.nodesSearched = 0;
 
     const aiPlayer = board.currentPlayer;

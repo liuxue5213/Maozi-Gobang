@@ -22,7 +22,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: config.corsOrigin,
     methods: ['GET', 'POST'],
   },
   pingTimeout: 60000,
@@ -34,7 +34,7 @@ const roomManager = new RoomManager();
 app.set('roomManager', roomManager);
 
 // 中间件
-app.use(cors());
+app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json());
 
 // 静态文件 (Web 前端)
@@ -174,12 +174,13 @@ io.on('connection', (socket) => {
     // 人机模式下 AI 落子
     if (room.isAiGame && room.status === 'playing') {
       setTimeout(async () => {
+        const aiColor = room.board.currentPlayer; // AI 落子前的当前执子方
         const aiResult = await room.makeAiMove();
         if (aiResult) {
           io.to(room.id).emit('move-made', {
             row: aiResult.row,
             col: aiResult.col,
-            playerColor: aiResult.playerColor || (room.board.currentPlayer === 1 ? 2 : 1),
+            playerColor: aiColor,
             board: room.board.serialize(),
             thinking: aiResult.thinking,
           });
@@ -263,6 +264,10 @@ io.on('connection', (socket) => {
  * 处理游戏结束
  */
 function handleGameEnd(room, io) {
+  // 防止多次触发（认输/超时/断开等路径可能重复调用）
+  if (room.ended) return;
+  room.ended = true;
+
   try {
   const duration = room.startedAt ? Date.now() - room.startedAt : 0;
   const players = Array.from(room.players.values());
@@ -316,12 +321,15 @@ function handleGameEnd(room, io) {
   }
 
   // 保存对局记录
+  // games 表有 users 外键，游客等不存在于 users 表的用户需存 NULL
+  const resolveUserId = (uid) =>
+    uid && db.prepare('SELECT 1 FROM users WHERE id = ?').get(uid) ? uid : null;
   const black = players.find((p) => p.color === 1);
   const white = players.find((p) => p.color === 2);
   saveGameRecord({
     roomId: room.id,
-    playerBlack: black?.userId,
-    playerWhite: white?.userId,
+    playerBlack: resolveUserId(black?.userId),
+    playerWhite: resolveUserId(white?.userId),
     winner: room.winner || 0,
     isAiGame: room.isAiGame,
     aiDifficulty: room.aiDifficulty,

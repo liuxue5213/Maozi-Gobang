@@ -18,6 +18,7 @@ class GameRoom {
     this.aiDifficulty = aiDifficulty;
     this.ai = isAiGame ? new GomokuAI(aiDifficulty) : null;
     this.status = 'waiting'; // waiting, playing, finished
+    this.ended = false; // game-over 结算是否已执行
     this.winner = null;
     this.winLine = [];
     this.createdAt = Date.now();

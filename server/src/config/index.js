@@ -7,6 +7,9 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET || 'maozi-gobang-secret-key-change-in-production',
   jwtExpires: '7d',
 
+  // CORS 允许来源 (逗号分隔多个域名, * 表示全部)
+  corsOrigin: process.env.CORS_ORIGIN || '*',
+
   // 游戏配置
   game: {
     boardSize: 15,
