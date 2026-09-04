@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>猫子五子棋</title>
+  <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部导航 -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">猫</span>
+        <span class="logo-text">猫子五子棋</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-page="home">首页</button>
+        <button class="nav-btn" data-page="leaderboard">排行榜</button>
+        <button class="nav-btn" data-page="profile">我的</button>
+      </nav>
+      <div class="user-info" id="userInfo">
+        <button class="btn btn-primary" id="loginBtn">登录</button>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main">
+      <!-- 首页 / 游戏页面 -->
+      <section class="page active" id="page-home">
+        <div class="game-container">
+          <!-- 游戏状态面板 -->
+          <div class="game-panel">
+            <div class="player-info" id="playerBlack">
+              <div class="stone-indicator black"></div>
+              <span class="player-name">黑棋</span>
+              <span class="player-time" id="timeBlack">00:30</span>
+            </div>
+            <div class="game-status" id="gameStatus">选择模式开始游戏</div>
+            <div class="player-info" id="playerWhite">
+              <div class="stone-indicator white"></div>
+              <span class="player-name">白棋</span>
+              <span class="player-time" id="timeWhite">00:30</span>
+            </div>
+          </div>
+
+          <!-- 棋盘 Canvas -->
+          <div class="board-wrapper">
+            <canvas id="gameBoard" width="600" height="600"></canvas>
+            <div class="board-overlay" id="boardOverlay">
+              <div class="overlay-content">
+                <h2>猫子五子棋</h2>
+                <div class="mode-buttons">
+                  <button class="btn btn-large btn-ai" id="btnAiGame">
+                    <span class="btn-icon">🤖</span>
+                    <span class="btn-text">人机对战</span>
+                  </button>
+                  <button class="btn btn-large btn-pvp" id="btnPvpGame">
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">在线对战</span>
+                  </button>
+                </div>
+                <div class="difficulty-select" id="difficultySelect" style="display:none">
+                  <h3>选择难度</h3>
+                  <div class="difficulty-buttons">
+                    <button class="btn btn-diff" data-level="1">⭐ 入门</button>
+                    <button class="btn btn-diff" data-level="2">⭐⭐ 简单</button>
+                    <button class="btn btn-diff active" data-level="3">⭐⭐⭐ 中等</button>
+                    <button class="btn btn-diff" data-level="4">⭐⭐⭐⭐ 困难</button>
+                    <button class="btn btn-diff" data-level="5">⭐⭐⭐⭐⭐ 大师</button>
+                  </div>
+                  <button class="btn btn-primary btn-start" id="btnStartAi">开始游戏</button>
+                </div>
+                <div class="match-status" id="matchStatus" style="display:none">
+                  <div class="spinner"></div>
+                  <p>正在匹配对手...</p>
+                  <button class="btn btn-secondary" id="btnCancelMatch">取消</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="game-actions">
+            <button class="btn btn-action" id="btnResign" disabled>认输</button>
+            <button class="btn btn-action" id="btnDraw" disabled>求和</button>
+            <button class="btn btn-action" id="btnUndo" disabled>悔棋</button>
+            <button class="btn btn-action" id="btnNewGame">新游戏</button>
+          </div>
+        </div>
+
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+          <div class="stats-card">
+            <h3>游戏统计</h3>
+            <div class="stat-item">
+              <span class="stat-label">在线人数</span>
+              <span class="stat-value" id="onlineCount">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">我的积分</span>
+              <span class="stat-value" id="myRating">-</span>
+            </div>
+          </div>
+          <div class="chat-card">
+            <h3>聊天</h3>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+              <input type="text" id="chatInput" placeholder="输入消息...">
+              <button class="btn btn-send" id="btnSendChat">发送</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 排行榜页面 -->
+      <section class="page" id="page-leaderboard">
+        <div class="page-content">
+          <h2>排行榜</h2>
+          <div class="leaderboard-table-wrapper">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>排名</th>
+                  <th>玩家</th>
+                  <th>积分</th>
+                  <th>胜/负/平</th>
+                  <th>胜率</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody">
+                <tr><td colspan="5" class="loading">加载中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 个人页面 -->
+      <section class="page" id="page-profile">
+        <div class="page-content">
+          <div id="profileNotLoggedIn" class="login-prompt">
+            <p>请先登录查看个人信息</p>
+            <button class="btn btn-primary" id="loginBtn2">登录 / 注册</button>
+          </div>
+          <div id="profileLoggedIn" style="display:none">
+            <div class="profile-header">
+              <div class="profile-avatar">猫</div>
+              <div class="profile-info">
+                <h2 id="profileNickname">-</h2>
+                <p class="profile-rating">积分: <span id="profileRating">-</span></p>
+                <p class="profile-rank">排名: #<span id="profileRank">-</span></p>
+              </div>
+            </div>
+            <div class="profile-stats">
+              <div class="stat-card">
+                <span class="stat-number" id="statPlayed">-</span>
+                <span class="stat-label">总局数</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number" id="statWon">-</span>
+                <span class="stat-label">胜场</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number" id="statWinRate">-</span>
+                <span class="stat-label">胜率</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number" id="statStreak">-</span>
+                <span class="stat-label">最高连胜</span>
+              </div>
+            </div>
+            <div class="rating-history">
+              <h3>积分变动</h3>
+              <canvas id="ratingChart" width="500" height="200"></canvas>
+            </div>
+            <button class="btn btn-secondary" id="btnLogout">退出登录</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 登录弹窗 -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <span class="modal-close" id="closeModal">&times;</span>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">登录</button>
+        <button class="auth-tab" data-tab="register">注册</button>
+      </div>
+      <form class="auth-form" id="loginForm">
+        <input type="text" name="username" placeholder="用户名" required minlength="3">
+        <input type="password" name="password" placeholder="密码" required minlength="6">
+        <button type="submit" class="btn btn-primary btn-block">登录</button>
+      </form>
+      <form class="auth-form" id="registerForm" style="display:none">
+        <input type="text" name="username" placeholder="用户名 (3-20字符)" required minlength="3" maxlength="20">
+        <input type="text" name="nickname" placeholder="昵称" maxlength="20">
+        <input type="password" name="password" placeholder="密码 (至少6位)" required minlength="6">
+        <button type="submit" class="btn btn-primary btn-block">注册</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Socket.IO 客户端 -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="src/js/board.js"></script>
+  <script src="src/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  gobang:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: maozi-gobang
+    ports:
+      - "3000:3000"
+    volumes:
+      - gobang-data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - JWT_SECRET=${JWT_SECRET:-change-this-secret-in-production}
+      - DB_PATH=/app/data/gobang.db
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+
+  # 可选: Nginx 反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: maozi-gobang-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - gobang
+    restart: unless-stopped
+
+volumes:
+  gobang-data:
