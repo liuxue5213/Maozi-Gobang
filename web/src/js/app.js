@@ -195,11 +195,11 @@ class GobangApp {
 
   // ==================== 游戏逻辑 ====================
   startAiGame() {
-    this.socket.emit('ai-game-created', { difficulty: this.selectedDifficulty });
-    this.hideOverlay();
+    this.socket.emit('create-ai-game', { difficulty: this.selectedDifficulty });
   }
 
   handleAiGameCreated(data) {
+    this.hideOverlay();
     this.currentRoom = { id: data.roomId, isAiGame: true };
     this.myColor = data.yourColor;
     this.gameActive = true;
@@ -349,6 +349,9 @@ class GobangApp {
     this.currentRoom = null;
     this.setActionButtons(false);
     this.updateGameStatus('选择模式开始游戏');
+    // 重置遮罩面板状态
+    document.getElementById('difficultySelect').style.display = 'none';
+    document.getElementById('matchStatus').style.display = 'none';
     this.showOverlay();
   }
 
