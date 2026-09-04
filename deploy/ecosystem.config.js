@@ -9,8 +9,10 @@ module.exports = {
       name: 'maozi-gobang',
       script: './src/index.js',
       cwd: '/opt/maozi-gobang',
-      instances: 'max',           // 使用所有 CPU 核心
-      exec_mode: 'cluster',       // 集群模式
+      // 游戏房间状态在内存中，必须单实例 fork 模式
+      // (cluster 模式会导致在线匹配跨进程失效、polling 升级间歇失败)
+      instances: 1,
+      exec_mode: 'fork',
       max_memory_restart: '512M',
       env: {
         NODE_ENV: 'production',

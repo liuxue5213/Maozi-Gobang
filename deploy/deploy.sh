@@ -80,11 +80,13 @@ ssh -p ${SERVER_PORT} ${SERVER_USER}@${SERVER_HOST} << 'REMOTE_SCRIPT'
   fi
 
   # 使用 PM2 启动/重启
+  # 注意: 游戏房间状态在内存中，必须用 fork 单实例模式
+  # (cluster 模式会导致在线匹配跨进程失效、polling 升级间歇失败)
   pm2 describe maozi-gobang > /dev/null 2>&1 && pm2 stop maozi-gobang || true
   pm2 start src/index.js --name maozi-gobang \
     --max-memory-restart 512M \
     --env production \
-    -i max
+    -f
   pm2 save
 
   # 设置开机自启
